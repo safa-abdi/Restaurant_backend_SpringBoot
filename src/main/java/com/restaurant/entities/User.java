@@ -1,6 +1,7 @@
 package com.restaurant.entities;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.PrePersist;
@@ -27,6 +28,7 @@ public class User {
 	
 	private String Firstname;
 	private String Lastname;
+    @Column(unique = true)
 	private String email;
 	private String password;
 	private String phone;
@@ -51,6 +53,8 @@ public class User {
 		this.phone = phone;
 		this.role = role;
 	}
+	
+	
 	public User() {
 		super();
 	}
