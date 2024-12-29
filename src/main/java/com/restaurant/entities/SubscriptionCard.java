@@ -1,6 +1,7 @@
 package com.restaurant.entities;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,6 +36,8 @@ public class SubscriptionCard {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt; // Dernière mise à jour
+    @OneToMany(mappedBy = "subscriptionCard")
+    private List<Transaction> transactions;
 
     public enum Status {
         ACTIVE,
@@ -59,7 +63,15 @@ public class SubscriptionCard {
         return user;
     }
 
-    public void setUser(User user) {
+    public List<Transaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
+	}
+
+	public void setUser(User user) {
         this.user = user;
     }
 

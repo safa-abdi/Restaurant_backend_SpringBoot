@@ -4,8 +4,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.restaurant.entities.SubscriptionCard;
+import com.restaurant.entities.Transaction;
 import com.restaurant.entities.User;
 import com.restaurant.repositories.SubscriptionCardRepository;
+import com.restaurant.repositories.TransactionRepository;
 import com.restaurant.repositories.UserRepository;
 
 @Service
@@ -57,5 +59,63 @@ public class SubscriptionCardService {
     // Supprimer une carte
     public void deleteSubscriptionCard(Long id) {
         subscriptionCardRepository.deleteById(id);
+    }
+    public SubscriptionCard changeCardStatus(Long cardId, SubscriptionCard.Status newStatus) {
+        // Vérifier si la carte existe
+        SubscriptionCard card = subscriptionCardRepository.findById(cardId)
+                .orElseThrow(() -> new RuntimeException("Carte introuvable avec l'ID : " + cardId));
+
+        // Modifier le statut
+        card.setStatus(newStatus);
+        return subscriptionCardRepository.save(card);
+    }
+    @Autowired
+    private TransactionRepository transactionRepository;
+    // Recharge balance and create a transaction
+    public SubscriptionCard rechargeBalance(Long cardId, double amount) {
+        if (amount <= 0) {
+            throw new RuntimeException("Le montant doit être supérieur à zéro.");
+        }
+
+        SubscriptionCard card = getSubscriptionCardById(cardId);
+        card.setBalance(card.getBalance() + amount);
+
+        // Create a transaction for the recharge
+        Transaction transaction = new Transaction();
+        transaction.setSubscriptionCard(card);
+        transaction.setAmount(amount);
+        transaction.setType(Transaction.TransactionType.CREDIT);  // Mark as CREDIT for recharge
+        transactionRepository.save(transaction);  // Save the transaction
+
+        return subscriptionCardRepository.save(card);
+    }
+    
+    
+    //débit
+    public SubscriptionCard debitBalance(Long cardId, double amount) {
+        if (amount <= 0) {
+            throw new RuntimeException("Le montant doit être supérieur à zéro.");
+        }
+
+        // Récupérer la carte par ID
+        SubscriptionCard card = getSubscriptionCardById(cardId);
+
+        // Vérifier si le solde est suffisant
+        if (card.getBalance() < amount) {
+            throw new RuntimeException("Solde insuffisant pour effectuer cette opération.");
+        }
+
+        // Débiter le montant du solde
+        card.setBalance(card.getBalance() - amount);
+
+        // Créer une transaction pour le débit
+        Transaction transaction = new Transaction();
+        transaction.setSubscriptionCard(card);
+        transaction.setAmount(amount);
+        transaction.setType(Transaction.TransactionType.DEBIT);  // Marquer comme DEBIT pour le retrait
+        transactionRepository.save(transaction);  // Enregistrer la transaction
+
+        // Sauvegarder la carte mise à jour
+        return subscriptionCardRepository.save(card);
     }
 }

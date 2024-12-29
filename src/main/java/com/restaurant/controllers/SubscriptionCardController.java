@@ -54,6 +54,13 @@ public class SubscriptionCardController {
         SubscriptionCard blockedCard = subscriptionCardService.blockCard(id);
         return ResponseEntity.ok(blockedCard);
     }
+    
+    
+    @PutMapping("/{id}/unblock")
+    public ResponseEntity<SubscriptionCard> unblockCard(@PathVariable Long id) {
+        SubscriptionCard unblockedCard = subscriptionCardService.changeCardStatus(id, SubscriptionCard.Status.ACTIVE);
+        return ResponseEntity.ok(unblockedCard);
+    }
 
     // Supprimer une carte
     @DeleteMapping("/{id}")
@@ -61,4 +68,23 @@ public class SubscriptionCardController {
         subscriptionCardService.deleteSubscriptionCard(id);
         return ResponseEntity.ok("Carte supprimée avec succès !");
     }
+    
+    // Recharge card (now also logs a transaction)
+    @PutMapping("/{id}/recharge")
+    public ResponseEntity<SubscriptionCard> rechargeBalance(
+            @PathVariable Long id,
+            @RequestParam double amount) {
+        SubscriptionCard rechargedCard = subscriptionCardService.rechargeBalance(id, amount);
+        return ResponseEntity.ok(rechargedCard);
+    }
+ // Débiter un montant de la carte
+    @PutMapping("/{id}/debit")
+    public ResponseEntity<SubscriptionCard> debitBalance(
+            @PathVariable Long id,
+            @RequestParam double amount) {
+        SubscriptionCard debitedCard = subscriptionCardService.debitBalance(id, amount);
+        return ResponseEntity.ok(debitedCard);
+    }
+
+    
 }
