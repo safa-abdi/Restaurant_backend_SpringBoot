@@ -1,8 +1,8 @@
 package com.restaurant.entities;
 
-import com.restaurant.repositories.MealIngredientRepository;
 import com.restaurant.repositories.MealRepository;
 import com.restaurant.repositories.IngredientRepository;
+import com.restaurant.repositories.MealIngredientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,31 +22,47 @@ public class MealService {
     @Autowired
     private MealIngredientRepository mealIngredientRepository;
 
-    public Meal addMeal(String name, LocalDateTime plannedDate, List<Long> ingredientIds, List<Double> quantities, BigDecimal cost) {
-        // Vérification que les tailles des listes sont identiques
+    public Meal addMeal(String name, LocalDateTime plannedDate, List<Long> ingredientIds, List<BigDecimal> quantities, BigDecimal cost) {
+        // Check if ingredientIds and quantities have the same size
         if (ingredientIds.size() != quantities.size()) {
             throw new IllegalArgumentException("Le nombre d'ingrédients et de quantités ne correspond pas.");
         }
 
-        // Récupération des ingrédients en fonction des IDs
+        // Retrieve the ingredients from the database
         List<Ingredient> ingredients = ingredientRepository.findAllById(ingredientIds);
         Meal meal = new Meal(name, plannedDate, ingredients, cost);
-
-        // Sauvegarder le repas dans la base de données
         meal = mealRepository.save(meal);
 
-        // Sauvegarder les associations entre Meal et Ingredient avec les quantités
+        // Process each ingredient and quantity
         for (int i = 0; i < ingredientIds.size(); i++) {
             Ingredient ingredient = ingredients.get(i);
-            Double quantity = quantities.get(i);
+            BigDecimal quantityUsed = quantities.get(i);
 
-            // Créer et sauvegarder l'association MealIngredient
-            MealIngredient mealIngredient = new MealIngredient(meal, ingredient, quantity);
+            // Save the association between Meal and Ingredient
+            MealIngredient mealIngredient = new MealIngredient(meal, ingredient, quantityUsed);
             mealIngredientRepository.save(mealIngredient);
+
+            // Update the stock of the ingredient
+            updateIngredientStock(ingredient, quantityUsed);
         }
 
         return meal;
     }
 
-  
+    // Method to update the ingredient stock
+    private void updateIngredientStock(Ingredient ingredient, BigDecimal quantityUsed) {
+        // Check if there is enough stock
+        if (ingredient.getQuantity().compareTo(quantityUsed) >= 0) {
+            // Subtract the quantity used from the ingredient's stock
+            ingredient.setQuantity(ingredient.getQuantity().subtract(quantityUsed));
+            ingredientRepository.save(ingredient);
+        } else {
+            throw new IllegalArgumentException("Quantité d'ingrédient insuffisante.");
+        }
+    }
+
+    public List<Meal> getMealsByWeek(int weekNumber) {
+        // Placeholder for future implementation of filtering by week
+        return null;
+    }
 }

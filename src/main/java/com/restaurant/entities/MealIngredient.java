@@ -1,5 +1,7 @@
 package com.restaurant.entities;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,12 +21,12 @@ public class MealIngredient {
     @ManyToOne
     private Ingredient ingredient;
 
-    private Double quantity; // Quantité utilisée dans le repas
+    private BigDecimal quantity; // Quantité utilisée dans le repas
 
     // Constructeurs
     public MealIngredient() {}
 
-    public MealIngredient(Meal meal, Ingredient ingredient, Double quantity) {
+    public MealIngredient(Meal meal, Ingredient ingredient, BigDecimal quantity) {
         this.meal = meal;
         this.ingredient = ingredient;
         this.quantity = quantity;
@@ -55,11 +57,11 @@ public class MealIngredient {
         this.ingredient = ingredient;
     }
 
-    public Double getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Double quantity) {
+    public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
 }
