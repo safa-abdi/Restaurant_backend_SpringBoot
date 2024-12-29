@@ -40,7 +40,8 @@ public class JwtUtil {
     }
 
     public String extractRole(String token) {
-        Claims claims = Jwts.parser()
+        @SuppressWarnings("deprecation")
+		Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .parseClaimsJws(token)
                 .getBody();

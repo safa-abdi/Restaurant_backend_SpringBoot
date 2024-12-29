@@ -23,6 +23,9 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .authorizeRequests(requests -> requests
                 .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/ingredients*").permitAll()
+                .requestMatchers("/api/subscription-cards").hasRole("ADMIN")
+                .requestMatchers("/api/subscription-cards/**").hasRole("ADMIN")
                 .requestMatchers("/api/users/all/**").permitAll()
                 .requestMatchers("/api/users/admin/**").hasRole("ADMIN")  
                 .anyRequest().authenticated())
