@@ -25,16 +25,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        // Recherche de l'utilisateur par email
         User user = userService.findByEmail(loginRequest.getEmail());
 
         if (user != null && passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            // Génération du token JWT
             String token = jwtUtil.generateToken(user.getEmail());
             return ResponseEntity.ok(new AuthResponse(token));
         }
 
-        // Retourne une réponse 401 si l'utilisateur ou le mot de passe est incorrect
         return ResponseEntity.status(401).body("Invalid email or password");
     }
 }

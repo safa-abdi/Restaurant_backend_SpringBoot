@@ -1,11 +1,7 @@
 package com.restaurant.entities;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-
 import javax.persistence.Column;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,7 +20,6 @@ public class User {
 	@Id
 	@GeneratedValue (strategy=GenerationType.IDENTITY)
 	private Long id ;
-	
 	
 	private String Firstname;
 	private String Lastname;
