@@ -41,4 +41,26 @@ public class UserService {
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
+    public User modifUser(User user) {
+        User existingUser = userRepository.findById(user.getId()).orElse(null);
+
+        if (existingUser != null) {
+            existingUser.setEmail(user.getEmail());
+            existingUser.setFirstname(user.getFirstname());
+            existingUser.setLastname(user.getLastname());
+            existingUser.setRole(user.getRole());
+            existingUser.setPhone(user.getPhone());
+
+            // Si un mot de passe est fourni, on le hache avant de le sauvegarder
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                String hashedPassword = passwordEncoder.encode(user.getPassword());
+                existingUser.setPassword(hashedPassword);
+            }
+
+            return userRepository.save(existingUser);
+        }
+
+        return user;
+    }
+
 }

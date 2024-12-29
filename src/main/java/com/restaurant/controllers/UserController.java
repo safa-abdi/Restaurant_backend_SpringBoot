@@ -16,22 +16,29 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
+    @PostMapping("/all/add")
     public User createUser(@RequestBody User user) {
         return userService.addUser(user);
     }
 
-    @GetMapping
+    @PutMapping("/all/modif/{id}")
+    public User modifUser(@PathVariable Long id, @RequestBody User user) {
+        user.setId(id); 
+        return userService.modifUser(user);  
+    }
+
+
+    @GetMapping("/admin/get")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/all/{id}")
     public User getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "User with ID " + id + " has been deleted.";

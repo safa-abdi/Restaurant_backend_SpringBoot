@@ -8,6 +8,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,10 +25,15 @@ public class User {
 	
 	private String Firstname;
 	private String Lastname;
+	
     @Column(unique = true)
 	private String email;
+    
 	private String password;
 	private String phone;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private Role role;
 	@CreationTimestamp
     private LocalDateTime createdAt;
@@ -34,9 +41,9 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 	public enum Role {
-	    Admin,
-	    Student,
-	    Employe
+		ROLE_ADMIN,  
+	    ROLE_STUDENT,
+	    ROLE_EMPLOYE
 	}
 	
 	public User(String firstname, String lastname, String email, String password, String phone, Role role) {
@@ -56,6 +63,11 @@ public class User {
 	public Long getId() {
 		return id;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 
 	public String getFirstname() {
 		return Firstname;
