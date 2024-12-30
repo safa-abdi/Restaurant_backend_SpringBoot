@@ -9,6 +9,7 @@ import com.restaurant.Repositories.UserRepository;
 import com.restaurant.entities.User;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -19,6 +20,10 @@ public class UserService {
 	
     @Autowired
     private UserRepository userRepository;
+
+    public Optional<User> getUserById1(Long userId) {
+        return userRepository.findById(userId);
+    }
 
     public User addUser(User user) {
     	 String encodedPassword = passwordEncoder.encode(user.getPassword());

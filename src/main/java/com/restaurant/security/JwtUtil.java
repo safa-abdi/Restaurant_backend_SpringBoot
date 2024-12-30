@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 
@@ -84,5 +85,29 @@ public class JwtUtil {
 
     public boolean isTokenRevoked(String token) {
         return blacklistedTokens.contains(token);
+    }
+
+    public static String extractEmailFromToken(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+
+            return extractEmailFromToken(token);
+        } else {
+            throw new RuntimeException("Token JWT non fourni ou mal formé.");
+        }
+    }
+
+    public static String extractEmailFromToken(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey("safaaa1532")  
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getSubject();  
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de l'extraction du token JWT", e);
+        }
     }
 }
