@@ -1,7 +1,8 @@
 package com.restaurant.controllers;
 
 import com.restaurant.entities.Meal;
-import com.restaurant.entities.MealService;
+import com.restaurant.services.MealService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/meals")
@@ -57,4 +57,28 @@ public class MealController {
                     .body(null); // You can add an error message if needed
         }
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<Meal> selectMealById(@PathVariable Long id) {
+        try {
+            Meal meal = mealService.getMealById(id);
+            if (meal != null) {
+                return ResponseEntity.ok(meal);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Meal>> selectAllMeals() {
+        try {
+            List<Meal> meals = mealService.getAllMeals();
+            return ResponseEntity.ok(meals);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }

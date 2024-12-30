@@ -1,6 +1,9 @@
-package com.restaurant.entities;
+package com.restaurant.services;
 
 import com.restaurant.repositories.MealRepository;
+import com.restaurant.entities.Ingredient;
+import com.restaurant.entities.Meal;
+import com.restaurant.entities.MealIngredient;
 import com.restaurant.repositories.IngredientRepository;
 import com.restaurant.repositories.MealIngredientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,4 +68,12 @@ public class MealService {
         // Placeholder for future implementation of filtering by week
         return null;
     }
+    public Meal getMealById(Long id) {
+        return mealRepository.findById(id).orElse(null);
+    }
+
+    public List<Meal> getAllMeals() {
+        return mealRepository.findAll();
+    }
+
 }
