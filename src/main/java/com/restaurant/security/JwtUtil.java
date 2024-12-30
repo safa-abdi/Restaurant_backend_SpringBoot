@@ -99,7 +99,8 @@ public class JwtUtil {
         }
     }
 
-    public static String extractEmailFromToken(String token) {
+    @SuppressWarnings("deprecation")
+	public static String extractEmailFromToken(String token) {
         try {
             Claims claims = Jwts.parser()
                     .setSigningKey("safaaa1532")  

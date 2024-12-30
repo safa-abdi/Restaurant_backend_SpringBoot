@@ -7,10 +7,6 @@ import com.restaurant.Repositories.PaymentRepository;
 import com.restaurant.Repositories.MealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.restaurant.entities.Payment;
-import com.restaurant.Repositories.PaymentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
@@ -29,13 +25,12 @@ public class PaymentService {
     private PaymentRepository paymentRepository;
 
     @Autowired
-    private MealRepository mealRepository; // Pour récupérer les informations sur le repas
+    private MealRepository mealRepository; 
 
     @Autowired
-    private UserService userService; // Pour récupérer l'utilisateur
+    private UserService userService; 
 
     public Payment createPayment(Long userId, Long mealId, String paymentMethod, String status) {
-        // Récupérer l'utilisateur par son ID
         Optional<User> optionalUser = Optional.ofNullable(userService.getUserById(userId));
         if (!optionalUser.isPresent()) {
             throw new RuntimeException("User not found");
@@ -43,7 +38,6 @@ public class PaymentService {
 
         User user = optionalUser.get();
 
-        // Récupérer le repas par son ID
         Optional<Meal> optionalMeal = mealRepository.findById(mealId);
         if (!optionalMeal.isPresent()) {
             throw new RuntimeException("Meal not found");
@@ -51,18 +45,15 @@ public class PaymentService {
 
         Meal meal = optionalMeal.get();
 
-        // Calculer le montant du paiement basé sur le coût du repas
         BigDecimal amount = meal.getCost();
 
-        // Créer l'objet Payment
         Payment payment = new Payment();
         payment.setAmount(amount);
         payment.setPaymentMethod(paymentMethod);
         payment.setStatus(status);
-        payment.setMeal(meal);  // Associer le repas
-        payment.setUser(user);  // Associer l'utilisateur
+        payment.setMeal(meal);  
+        payment.setUser(user);  
 
-        // Enregistrer le paiement
         return paymentRepository.save(payment);
     }
 
