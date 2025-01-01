@@ -24,7 +24,11 @@ public class SecurityConfig {
             .authorizeRequests(requests -> requests
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/api/meals").permitAll()
-                .requestMatchers("/api/payments").hasRole("STUDENT")
+                .requestMatchers("/api/stats/daily").permitAll()
+                .requestMatchers("/api/stats/monthly").permitAll()
+                .requestMatchers("/api/payments").permitAll()
+                .requestMatchers("/api/payments/**").permitAll()
+                //.requestMatchers("/api/payments").hasRole("STUDENT")
                 .requestMatchers("/api/menus/start-date/**").permitAll()
                 .requestMatchers("/api/menus").permitAll()
                 .requestMatchers("/api/menus/add").hasRole("ADMIN")

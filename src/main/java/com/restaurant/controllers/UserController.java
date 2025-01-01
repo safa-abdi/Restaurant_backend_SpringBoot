@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*", allowCredentials = "true")
 public class UserController {
 
     @Autowired
@@ -38,6 +39,11 @@ public class UserController {
         return userService.getUserById(id);
     }
 
+    @GetMapping("/all/email/{email}")
+    public User getUserByEmail(@PathVariable String email) {
+        return userService.findByEmail(email);
+    }
+    
     @DeleteMapping("/admin/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);

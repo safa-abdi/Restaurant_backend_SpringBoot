@@ -17,13 +17,15 @@ public class PaymentController {
 
     @Autowired
     private PaymentService paymentService;
-
+    
     @PostMapping
     public ResponseEntity<Payment> createPayment(
             @RequestParam Long userId, 
             @RequestParam Long mealId, 
             @RequestParam String paymentMethod, 
-            @RequestParam String status) {
+            @RequestParam(required = false) String status) { 
+
+        status = "incompleted";
         Payment savedPayment = paymentService.createPayment(userId, mealId, paymentMethod, status);
         return ResponseEntity.ok(savedPayment);
     }
@@ -53,6 +55,21 @@ public class PaymentController {
     public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
         paymentService.deletePayment(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @PutMapping("/valider_paiement/{id}")
+    public ResponseEntity<Payment> updatePaymentStatus(@PathVariable Long id) {
+        Payment payment = paymentService.getPaymentById(id)
+            .orElseGet(() -> null); 
+        
+        if (payment == null) {
+            return ResponseEntity.notFound().build(); 
+        }
+
+        payment.setStatus("Completed"); 
+        Payment updatedPayment = paymentService.updatePayment(payment); 
+
+        return ResponseEntity.ok(updatedPayment);
     }
     
     // Point d'API pour générer un reçu
