@@ -19,6 +19,7 @@ import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtil {
+	private static final SecretKey SECRET_KEY2 = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private Set<String> blacklistedTokens = new HashSet<>();
@@ -103,7 +104,7 @@ public class JwtUtil {
 	public static String extractEmailFromToken(String token) {
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey("safaaa1532")  
+                    .setSigningKey(SECRET_KEY2)  
                     .parseClaimsJws(token)
                     .getBody();
             return claims.getSubject();  
