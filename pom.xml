@@ -71,6 +71,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
+
 <dependency>
     <groupId>com.itextpdf</groupId>
     <artifactId>itext7-core</artifactId>
@@ -82,7 +83,11 @@
     <artifactId>itextpdf</artifactId>
     <version>5.5.12</version>
 </dependency>
-
+   <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.69</version>
+        </dependency>
     <!-- JWT Dependency -->
  
     <dependency>
